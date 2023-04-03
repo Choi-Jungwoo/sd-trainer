@@ -1,16 +1,16 @@
-import uvicorn
+import asyncio
+
 from fastapi import FastAPI
 
+from st_trainer.api import router as api_router
 from st_trainer.logger import logger
 
-app = FastAPI()
+app = FastAPI(
+    title='SD Trainer',
+)
+app.include_router(api_router)
 
 
-@app.get('/hello')
-async def hello():
-    logger.info('Hello World!')
-    return 'world'
-
-
-def run_server():
-    uvicorn.run('st_trainer.server:app', host='0.0.0.0', port=5000, log_level='info', reload=True)
+@app.on_event('startup')
+async def on_start():
+    logger.info(asyncio.get_event_loop())
